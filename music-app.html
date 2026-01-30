@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Music</title>
+<style>
+body {
+  margin: 0;
+  background: #0b0b0b;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+header {
+  padding: 20px;
+  background: #111;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+main {
+  padding: 20px;
+  padding-bottom: 140px;
+}
+.song {
+  padding: 12px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+.song:hover {
+  background: #1a1a1a;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #111;
+  padding: 15px;
+  box-sizing: border-box;
+}
+button {
+  background: #fa2d48;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  margin: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #ff4f67;
+}
+input[type="range"] {
+  width: 150px;
+}
+#nowPlaying {
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎵 My Music</h1>
+  <input type="file" id="fileInput" accept="audio/*" multiple>
+</header>
+
+<main id="library"></main>
+
+<footer>
+  <div id="nowPlaying">Nothing playing</div>
+  <audio id="audio" controls style="width:100%"></audio>
+
+  <div>
+    <button onclick="setSpeed(0.75)">0.75×</button>
+    <button onclick="setSpeed(1)">1×</button>
+    <button onclick="setSpeed(1.25)">1.25×</button>
+    <button onclick="setSpeed(1.5)">1.5×</button>
+    <button onclick="setSpeed(2)">2×</button>
+  </div>
+
+  <div>
+    Speed:
+    <input type="range" min="0.5" max="2" step="0.05" value="1"
+      oninput="updateSpeed(this.value)">
+    <span id="speedValue">1×</span>
+  </div>
+</footer>
+
+<script>
+const fileInput = document.getElementById("fileInput");
+const library = document.getElementById("library");
+const audio = document.getElementById("audio");
+const nowPlaying = document.getElementById("nowPlaying");
+const speedValue = document.getElementById("speedValue");
+
+fileInput.addEventListener("change", () => {
+  library.innerHTML = "";
+  Array.from(fileInput.files).forEach(file => {
+    const div = document.createElement("div");
+    div.className = "song";
+    div.textContent = file.name;
+    div.onclick = () => playSong(file);
+    library.appendChild(div);
+  });
+});
+
+function playSong(file) {
+  audio.src = URL.createObjectURL(file);
+  audio.play();
+  nowPlaying.textContent = "Now Playing: " + file.name;
+}
+
+function setSpeed(speed) {
+  audio.playbackRate = speed;
+  speedValue.textContent = speed + "×";
+}
+
+function updateSpeed(value) {
+  audio.playbackRate = value;
+  speedValue.textContent = value + "×";
+}
+</script>
+
+</body>
+</html>
